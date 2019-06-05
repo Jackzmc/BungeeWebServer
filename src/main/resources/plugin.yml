@@ -1,0 +1,4 @@
+name: BungeeWeb
+version: ${project.version}
+author: Jackz
+main: me.jackz.bungeeweb.BungeeWeb
