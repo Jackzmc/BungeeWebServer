@@ -41,4 +41,4 @@ Creates a JSON web server to get servers & player count
       "motd": "A Testing Server"
     }
   ]
-}```
+}

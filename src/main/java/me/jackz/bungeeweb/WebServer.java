@@ -12,23 +12,24 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-public class WebServer{
+class WebServer{
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
     // port to listen connection
     private BungeeWeb plugin;
     private static ProxyServer proxy;
-    private int PORT = 8080;
-    private String HOST = "127.0.0.1";
+    private int PORT;
+    private String HOST;
 
     WebServer(BungeeWeb plugin,String IP, int PORT) {
-            HOST = IP;
+            HOST = (IP.equals("")) ? null : IP;
             this.PORT = PORT;
             this.plugin = plugin;
             proxy = plugin.getProxy();
@@ -36,7 +37,8 @@ public class WebServer{
 
     void startServer() throws IOException {
         //todo: put 'HOST'
-        HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        InetAddress hostname = InetAddress.getByName(HOST);
+        HttpServer server = HttpServer.create(new InetSocketAddress(hostname,PORT), 0);
 
         HttpContext context = server.createContext("/");
         context.setHandler(WebServer::handleRequest);

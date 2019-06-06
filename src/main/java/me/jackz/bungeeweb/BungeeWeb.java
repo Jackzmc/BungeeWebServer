@@ -14,7 +14,7 @@ import java.nio.file.Files;
 public final class BungeeWeb extends Plugin {
 
     private static File CONFIG_FILE;
-    static Configuration config;
+    private static Configuration config;
 
     @Override
     public void onEnable() {
@@ -42,12 +42,13 @@ public final class BungeeWeb extends Plugin {
 
     private Configuration setupConfig() {
         if (!getDataFolder().exists())
+            //noinspection ResultOfMethodCallIgnored
             getDataFolder().mkdir();
         if (!CONFIG_FILE.exists()) {
             try {
                 Configuration config = new Configuration();
                 config.set("server.enabled",true);
-                config.set("server.ip","");
+                config.set("server.ip","127.0.0.1");
                 config.set("server.port",8080);
                 ConfigurationProvider.getProvider(YamlConfiguration.class).save(config, CONFIG_FILE);
             }catch(IOException e) {
@@ -61,8 +62,8 @@ public final class BungeeWeb extends Plugin {
         try {
             Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(CONFIG_FILE);
             if(!config.contains("server.enabled")) config.set("server.enabled",true);
-            if(!config.contains("server.ip")) config.set("server.ip","");
-            if(!config.contains("server.port")) config.set("server.port","8080");
+            if(!config.contains("server.ip")) config.set("server.ip","127.0.0.1");
+            if(!config.contains("server.port")) config.set("server.port",8080);
             return config;
         } catch (IOException e) {
             getLogger().severe("Could not load config file, disabling...");
