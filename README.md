@@ -1,5 +1,5 @@
-# BungeeWebServer
-Creates a JSON web server to get servers & player count
+# BungeeWebServer [![Build Status](https://ci.jackz.me/job/BungeeWebServer/badge/icon)](https://ci.jackz.me/job/BungeeWebServer/)
+Creates a JSON web server to get servers & player count 
 
 ### Configuration
 * **server.enabled** - enable/disable web server
