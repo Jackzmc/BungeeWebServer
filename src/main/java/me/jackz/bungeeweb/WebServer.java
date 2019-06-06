@@ -62,6 +62,8 @@ public class WebServer{
             server_object.addProperty("motd", server.getMotd());
             servers.add(server_object);
         }
+        main_object.addProperty("total_players",proxy.getOnlineCount());
+        main_object.addProperty("version",proxy.getVersion());
         main_object.add("players",players);
         main_object.add("servers",servers);
 

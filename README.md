@@ -10,6 +10,8 @@ Creates a JSON web server to get servers & player count
 
 ```json
 {
+  "total_players": 1,
+  "version": "git:Waterfall-Bootstrap:1.14-SNAPSHOT:57a7f98:284",
   "players": [
     {
       "uuid": "b0c16432-67a6-4e3d-b49a-61b323c49b03",
