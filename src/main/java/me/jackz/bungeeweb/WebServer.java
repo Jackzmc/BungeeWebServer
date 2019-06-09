@@ -3,48 +3,70 @@ package me.jackz.bungeeweb;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 class WebServer{
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;
     // port to listen connection
-    private BungeeWeb plugin;
     private static ProxyServer proxy;
-    private int PORT;
-    private String HOST;
+    private HttpServer server;
 
-    WebServer(BungeeWeb plugin,String IP, int PORT) {
-            HOST = (IP.equals("")) ? null : IP;
-            this.PORT = PORT;
-            this.plugin = plugin;
-            proxy = plugin.getProxy();
+    private List<HttpContext> contexts = new ArrayList<>();
+
+
+    /** Get the HttpServer for whatever purpose
+     * @return Returns a HttpServer object
+     */
+    public HttpServer getServer() {
+        return this.server;
     }
 
-    void startServer() throws IOException {
+    /** Get a HttpContext to add a custom route
+     * @param path The path on the server you want
+     * @return Returns a HttpContext object
+     */
+    public HttpContext getContext(String path) {
+        return server.createContext(path);
+    }
+
+    /** Removes a HttpContext by its path
+     * @param path The path of the context
+     */
+    public void removeContext(String path) {
+        this.contexts.remove(path);
+    }
+
+    void startServer(BungeeWeb plugin, String IP, int PORT) throws IOException {
+        proxy = plugin.getProxy();
+        String HOST = (IP.equals("")) ? null : IP;
         //todo: put 'HOST'
         InetAddress hostname = InetAddress.getByName(HOST);
-        HttpServer server = HttpServer.create(new InetSocketAddress(hostname,PORT), 0);
-
-        HttpContext context = server.createContext("/");
-        context.setHandler(WebServer::handleRequest);
+        server = HttpServer.create(new InetSocketAddress(hostname,PORT), 0);
+        setupInitialContexts();
         server.start();
     }
-    private static void handleRequest(HttpExchange exchange) throws IOException {
+    private void setupInitialContexts() {
+        // Json Parser
+        HttpContext context = server.createContext("/json");
+        context.setHandler(WebServer::JsonHandler);
+    }
+    private static void JsonHandler(HttpExchange exchange) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", String.format("application/json; charset=%s",CHARSET));
 
         JsonObject main_object = new JsonObject();

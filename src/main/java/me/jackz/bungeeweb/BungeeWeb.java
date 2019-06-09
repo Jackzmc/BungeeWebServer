@@ -1,6 +1,5 @@
 package me.jackz.bungeeweb;
 
-import net.md_5.bungee.api.config.ConfigurationAdapter;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -8,8 +7,6 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 
 public final class BungeeWeb extends Plugin {
 
@@ -25,9 +22,9 @@ public final class BungeeWeb extends Plugin {
             int port = config.getInt("server.port");
             String host = config.getString("server.ip");
             getLogger().info(String.format("Starting WebServer on %s:%d",host,port));
-            WebServer server = new WebServer(this,host,port);
+            WebServer server = new WebServer();
             try {
-                server.startServer();
+                server.startServer(this,host,port);
             } catch (IOException e) {
                 getLogger().warning("WebServer: " + e.getMessage());
             }
